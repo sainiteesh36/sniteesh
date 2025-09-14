@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on </title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Sep 2025 13:45:29 +0530</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis/Valkey Cluster to Cluster Migration in Kubernetes Using Redis Shake</title>
+      <link>http://localhost:1313/posts/redis-cluster-to-cluster-migration-in-kubernetes-using-redis-shake/</link>
+      <pubDate>Sun, 14 Sep 2025 13:45:29 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/redis-cluster-to-cluster-migration-in-kubernetes-using-redis-shake/</guid>
+      
+        <description>&lt;h2 id=&#34;overview-&#34;&gt;Overview :&lt;/h2&gt;
+&lt;p&gt;Migrating data between Redis clusters in Kubernetes can be challenging, especially with high availability and minimal downtime requirements. This guide walks you through performing a &lt;strong&gt;Redis cluster-to-cluster migration&lt;/strong&gt; using &lt;a href=&#34;https://github.com/tair-opensource/RedisShake&#34;&gt;&lt;strong&gt;Redis Shake&lt;/strong&gt;&lt;/a&gt; — a powerful data migration and synchronization tool by &lt;code&gt;tair-opensource&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Redis Shake supports both &lt;strong&gt;full data migration&lt;/strong&gt; and &lt;strong&gt;real-time incremental synchronization&lt;/strong&gt;, making it ideal for production migrations or ongoing cross-cluster replication scenarios. It works with both Redis and Redis-compatible databases like &lt;strong&gt;Valkey&lt;/strong&gt;.&lt;/p&gt;</description>
+      
+    </item>
+    
+  </channel>
+</rss>

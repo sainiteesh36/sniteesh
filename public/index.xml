@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title></title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Sep 2025 13:45:29 +0530</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis/Valkey Cluster to Cluster Migration in Kubernetes Using Redis Shake</title>
+      <link>http://localhost:1313/posts/redis-cluster-to-cluster-migration-in-kubernetes-using-redis-shake/</link>
+      <pubDate>Sun, 14 Sep 2025 13:45:29 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/redis-cluster-to-cluster-migration-in-kubernetes-using-redis-shake/</guid>
+      
+        <description>&lt;h2 id=&#34;overview-&#34;&gt;Overview :&lt;/h2&gt;
+&lt;p&gt;Migrating data between Redis clusters in Kubernetes can be challenging, especially with high availability and minimal downtime requirements. This guide walks you through performing a &lt;strong&gt;Redis cluster-to-cluster migration&lt;/strong&gt; using &lt;a href=&#34;https://github.com/tair-opensource/RedisShake&#34;&gt;&lt;strong&gt;Redis Shake&lt;/strong&gt;&lt;/a&gt; — a powerful data migration and synchronization tool by &lt;code&gt;tair-opensource&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Redis Shake supports both &lt;strong&gt;full data migration&lt;/strong&gt; and &lt;strong&gt;real-time incremental synchronization&lt;/strong&gt;, making it ideal for production migrations or ongoing cross-cluster replication scenarios. It works with both Redis and Redis-compatible databases like &lt;strong&gt;Valkey&lt;/strong&gt;.&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Sun, 14 Sep 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/about/</guid>
+      
+        <description>&lt;h1 id=&#34;about-me&#34;&gt;About Me&lt;/h1&gt;
+&lt;p&gt;Hi, I’m Sai Niteesh Ganga! I graduated from &lt;strong&gt;NIT Warangal in 2023&lt;/strong&gt; and I’m currently working at &lt;strong&gt;Nutanix&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Most of my work (and interests) revolve around:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Cloud &amp;amp; Infrastructure&lt;/strong&gt; – Kubernetes, Docker, automation, and distributed systems&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Databases&lt;/strong&gt; – Redis, Valkey, PostgreSQL, and storage internals&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Software Development&lt;/strong&gt; – Building reliable and scalable applications&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DevOps Practices&lt;/strong&gt; – CI/CD, monitoring, and performance tuning&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;why-i-write&#34;&gt;Why I Write&lt;/h2&gt;
+&lt;p&gt;This blog is a place where I document what I’m learning or working on. Whether it’s working with cloud infrastructure, debugging tricky issues, or diving into how systems work under the hood, writing helps me clarify my thoughts and hopefully helps others who run into similar problems.&lt;/p&gt;</description>
+      
+    </item>
+    
+    <item>
+      <title>Contact</title>
+      <link>http://localhost:1313/contact/</link>
+      <pubDate>Sun, 14 Sep 2025 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/contact/</guid>
+      
+        <description>&lt;h1 id=&#34;get-in-touch&#34;&gt;Get in Touch&lt;/h1&gt;
+&lt;p&gt;I’d love to hear from you! Whether it’s feedback on a blog post, a technical discussion, or just to say hi — feel free to reach out.&lt;/p&gt;
+&lt;h2 id=&#34;how-to-reach-me&#34;&gt;How to Reach Me&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;📧 Email: &lt;a href=&#34;mailto:sainiteesh36@gmail.com&#34;&gt;sainiteesh36@gmail.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;💼 LinkedIn: &lt;a href=&#34;https://in.linkedin.com/in/sai-niteesh-ganga-45a324212&#34;&gt;linkedin.com/in/sai-niteesh-ganga&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;💻 GitHub: &lt;a href=&#34;https://github.com/sainiteesh36&#34;&gt;github.com/sainiteesh36&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;em&gt;Looking forward to connecting!&lt;/em&gt;&lt;/p&gt;</description>
+      
+    </item>
+    
+  </channel>
+</rss>

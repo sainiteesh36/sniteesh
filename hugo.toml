@@ -1,0 +1,33 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+theme = 'anatole'
+disableFastRender = true
+
+[params]
+title = "Sai Niteesh Ganga"
+author = "Sai Niteesh Ganga"
+description = "Software Engineer | Cloud Enthusiast | Tech Blogger"
+profilePicture = 'images/profile.jpg'
+copyright = "2025 [Sai Niteesh Ganga](/)"
+reversepagetitle = true
+favicon = "favicons/"
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "Posts"
+url = "/posts/"
+weight = 2
+
+[[menu.main]]
+name = "About"
+url = "/about/"
+weight = 3
+
+[[menu.main]]
+name = "Contact"
+url = "/contact/"
+weight = 4
