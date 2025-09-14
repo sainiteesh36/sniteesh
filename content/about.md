@@ -4,8 +4,6 @@ date: 2025-09-14T00:00:00Z
 draft: false
 ---
 
-# About Me
-
 Hi, I’m Sai Niteesh Ganga! I graduated from **NIT Warangal in 2023** and I’m currently working at **Nutanix**.  
 
 Most of my work (and interests) revolve around:  

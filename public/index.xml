@@ -27,8 +27,7 @@
       
       <guid>http://localhost:1313/about/</guid>
       
-        <description>&lt;h1 id=&#34;about-me&#34;&gt;About Me&lt;/h1&gt;
-&lt;p&gt;Hi, I’m Sai Niteesh Ganga! I graduated from &lt;strong&gt;NIT Warangal in 2023&lt;/strong&gt; and I’m currently working at &lt;strong&gt;Nutanix&lt;/strong&gt;.&lt;/p&gt;
+        <description>&lt;p&gt;Hi, I’m Sai Niteesh Ganga! I graduated from &lt;strong&gt;NIT Warangal in 2023&lt;/strong&gt; and I’m currently working at &lt;strong&gt;Nutanix&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Most of my work (and interests) revolve around:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Cloud &amp;amp; Infrastructure&lt;/strong&gt; – Kubernetes, Docker, automation, and distributed systems&lt;/li&gt;
