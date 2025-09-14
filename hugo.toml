@@ -1,4 +1,4 @@
-baseURL = 'https://sainiteesh36.github.io/sniteesh/'
+baseURL = 'https://sniteesh.com/'
 languageCode = 'en-us'
 theme = 'anatole'
 disableFastRender = true
