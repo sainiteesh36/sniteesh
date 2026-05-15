@@ -7,27 +7,22 @@ disableFastRender = true
 title = "Sai Niteesh Ganga"
 author = "Sai Niteesh Ganga"
 description = "Software Engineer | Cloud Enthusiast | Tech Blogger"
-profilePicture = 'images/profile.jpg'
+profilePicture = 'images/profile.jpeg'
 copyright = "2025 [Sai Niteesh Ganga](/)"
 reversepagetitle = true
 favicon = "favicons/"
 
 [[menu.main]]
-name = "Home"
-url = "/"
-weight = 1
-
-[[menu.main]]
-name = "Posts"
+name = "Blogs"
 url = "/posts/"
-weight = 2
-
-[[menu.main]]
-name = "About"
-url = "/about/"
-weight = 3
+weight = 1
 
 [[menu.main]]
 name = "Contact"
 url = "/contact/"
-weight = 4
+weight = 2
+
+[[menu.main]]
+name = "Diet Tracker"
+url = "/diet-tracker/"
+weight = 3

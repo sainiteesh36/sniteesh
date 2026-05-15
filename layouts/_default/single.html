@@ -1,0 +1,12 @@
+{{ define "main" }}
+  <article class="single-page">
+    <p class="eyebrow">{{ .Section }}</p>
+    <h2>{{ .Title }}</h2>
+    {{ if not .Date.IsZero }}
+      <p class="post-date">{{ .Date.Format "Jan 2, 2006" }}</p>
+    {{ end }}
+    <div class="content">
+      {{ .Content }}
+    </div>
+  </article>
+{{ end }}

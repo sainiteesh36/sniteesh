@@ -1,0 +1,261 @@
+:root {
+  --bg: #060913;
+  --panel: #0d1324;
+  --panel-soft: #121b31;
+  --text: #ebf4ff;
+  --muted: #9db0cf;
+  --neon: #2ee6c6;
+  --neon-2: #70d6ff;
+  --border: rgba(112, 214, 255, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 0% 0%, #112346 0%, transparent 40%),
+    radial-gradient(circle at 100% 0%, #193552 0%, transparent 42%),
+    var(--bg);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.65;
+}
+
+a {
+  color: var(--neon-2);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--neon);
+}
+
+.site-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
+}
+
+.profile-panel,
+.content-panel {
+  background: linear-gradient(180deg, rgba(18, 27, 49, 0.95), rgba(13, 19, 36, 0.92));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 0 32px rgba(46, 230, 198, 0.12);
+}
+
+.profile-panel {
+  padding: 24px 18px;
+  text-align: center;
+  position: sticky;
+  top: 20px;
+  align-self: start;
+  height: fit-content;
+}
+
+.profile-photo {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(46, 230, 198, 0.65);
+  box-shadow: 0 0 20px rgba(46, 230, 198, 0.35);
+}
+
+.profile-name {
+  margin: 14px 0 6px;
+  font-size: 1.08rem;
+}
+
+.profile-tagline {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.content-panel {
+  padding: 24px 30px 34px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--neon);
+}
+
+.site-nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: rgba(112, 214, 255, 0.09);
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+  border-color: rgba(46, 230, 198, 0.6);
+  color: var(--neon);
+}
+
+.page-body h1,
+.page-body h2,
+.page-body h3,
+.page-body h4 {
+  line-height: 1.25;
+}
+
+.eyebrow {
+  color: var(--neon);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin: 0;
+}
+
+.hero h2 {
+  margin: 8px 0 14px;
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn {
+  border-radius: 999px;
+  padding: 9px 15px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: rgba(10, 18, 36, 0.9);
+}
+
+.btn-primary {
+  border-color: rgba(46, 230, 198, 0.6);
+  box-shadow: 0 0 16px rgba(46, 230, 198, 0.2);
+}
+
+.grid-section {
+  margin-top: 34px;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.post-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: var(--panel-soft);
+}
+
+.post-card h3,
+.post-card h4 {
+  margin: 8px 0;
+}
+
+.post-card p {
+  margin: 6px 0;
+  color: var(--muted);
+}
+
+.post-date {
+  color: var(--neon);
+  font-size: 0.84rem;
+}
+
+.single-page,
+.page-body {
+  min-width: 0;
+}
+
+.single-page .content {
+  min-width: 0;
+}
+
+.single-page .content img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.single-page .content pre {
+  overflow-x: auto;
+  background: #050a18;
+  border: 1px solid rgba(112, 214, 255, 0.25);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.single-page .content code {
+  overflow-wrap: anywhere;
+}
+
+.single-page .content table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .site-shell {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .profile-panel {
+    position: static;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+
+  .profile-photo {
+    width: 72px;
+    height: 72px;
+  }
+
+  .content-panel {
+    padding: 18px;
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

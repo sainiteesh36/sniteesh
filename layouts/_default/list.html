@@ -1,0 +1,18 @@
+{{ define "main" }}
+  <section class="list-header">
+    <p class="eyebrow">Browse</p>
+    <h2>{{ .Title }}</h2>
+  </section>
+
+  <div class="post-grid">
+    {{ range .Pages.ByDate.Reverse }}
+      <article class="post-card">
+        <p class="post-date">{{ .Date.Format "Jan 2, 2006" }}</p>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        <p>{{ with .Summary }}{{ . | plainify | truncate 180 }}{{ else }}No summary available yet.{{ end }}</p>
+      </article>
+    {{ else }}
+      <p>No pages found.</p>
+    {{ end }}
+  </div>
+{{ end }}

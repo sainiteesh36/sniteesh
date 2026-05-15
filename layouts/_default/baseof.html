@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {{ if .IsHome }}
+        {{ site.Title }}
+      {{ else }}
+        {{ .Title }} | {{ site.Title }}
+      {{ end }}
+    </title>
+    <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}" />
+    <link rel="stylesheet" href="/css/neon-site.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <aside class="profile-panel">
+        <a class="profile-link" href="/" aria-label="Go to homepage">
+          <img class="profile-photo" src="/{{ site.Params.profilePicture }}" alt="{{ site.Params.author }}" />
+        </a>
+        <h1 class="profile-name">{{ site.Params.author }}</h1>
+        <p class="profile-tagline">{{ site.Params.description }}</p>
+      </aside>
+
+      <main class="content-panel">
+        <header class="site-header">
+          <a class="brand" href="/">sniteesh.com</a>
+          <nav class="site-nav" aria-label="Main navigation">
+            {{ range site.Menus.main }}
+              <a href="{{ .URL }}" {{ if $.IsMenuCurrent "main" . }}class="active"{{ end }}>{{ .Name }}</a>
+            {{ end }}
+          </nav>
+        </header>
+
+        <section class="page-body">
+          {{ block "main" . }}{{ end }}
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

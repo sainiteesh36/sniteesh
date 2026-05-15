@@ -1,0 +1,30 @@
+{{ define "main" }}
+  <section class="hero">
+    <p class="eyebrow">Welcome</p>
+    <h2>Building cloud-native systems and practical developer tools.</h2>
+    <p>
+      I am Sai Niteesh Ganga, a software engineer focused on distributed systems, databases, and infrastructure.
+      This site is where I share technical write-ups and experiments.
+    </p>
+    <div class="hero-links">
+      <a class="btn btn-primary" href="/posts/">Read Blogs</a>
+      <a class="btn" href="/diet-tracker/">Open Diet Tracker</a>
+      <a class="btn" href="/contact/">Contact Me</a>
+    </div>
+  </section>
+
+  <section class="grid-section">
+    <h3>Recent posts</h3>
+    <div class="post-grid">
+      {{ range first 6 (where site.RegularPages "Section" "posts") }}
+        <article class="post-card">
+          <p class="post-date">{{ .Date.Format "Jan 2, 2006" }}</p>
+          <h4><a href="{{ .RelPermalink }}">{{ .Title }}</a></h4>
+          <p>{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}No summary available yet.{{ end }}</p>
+        </article>
+      {{ else }}
+        <p>No posts published yet.</p>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}
