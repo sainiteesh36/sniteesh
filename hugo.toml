@@ -1,5 +1,6 @@
 baseURL = 'https://sniteesh.com/'
 languageCode = 'en-us'
+title = 'Sai Niteesh Ganga'
 theme = 'anatole'
 disableFastRender = true
 

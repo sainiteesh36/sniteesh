@@ -1,202 +1,96 @@
-<!doctype html>
-<html lang="en">
-  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>
-      
-        Redis/Valkey Cluster to Cluster Migration in Kubernetes Using Redis Shake | 
-      
-    </title>
-    <meta name="description" content="Software Engineer | Cloud Enthusiast | Tech Blogger" />
-    <link rel="icon" type="image/jpeg" href="/images/profile.jpeg" />
-    <link rel="stylesheet" href="/css/neon-site.css" />
-  </head>
-  <body>
-    <div class="site-shell">
-      <aside class="profile-panel">
-        <a class="profile-link" href="/" aria-label="Go to homepage">
-          <img class="profile-photo" src="/images/profile.jpeg" alt="Sai Niteesh Ganga" />
-        </a>
-        <h1 class="profile-name">Sai Niteesh Ganga</h1>
-        <p class="profile-tagline">Software Engineer | Cloud Enthusiast | Tech Blogger</p>
-      </aside>
-
-      <main class="content-panel">
-        <header class="site-header">
-          <a class="brand" href="/">sniteesh.com</a>
-          <nav class="site-nav" aria-label="Main navigation">
-            
-              <a href="/posts/" >Blogs</a>
-            
-              <a href="/contact/" >Contact</a>
-            
-              <a href="/diet-tracker/" >Diet Tracker</a>
-            
-          </nav>
-        </header>
-
-        <section class="page-body">
-          
-  <article class="single-page">
-    <p class="eyebrow">posts</p>
-    <h2>Redis/Valkey Cluster to Cluster Migration in Kubernetes Using Redis Shake</h2>
-    
-      <p class="post-date">Sep 14, 2025</p>
-    
-    <div class="content">
-      <h2 id="overview-">Overview :</h2>
-<p>Migrating data between Redis clusters in Kubernetes can be challenging, especially with high availability and minimal downtime requirements. This guide walks you through performing a <strong>Redis cluster-to-cluster migration</strong> using <a href="https://github.com/tair-opensource/RedisShake"><strong>Redis Shake</strong></a> — a powerful data migration and synchronization tool by <code>tair-opensource</code>.</p>
-<p>Redis Shake supports both <strong>full data migration</strong> and <strong>real-time incremental synchronization</strong>, making it ideal for production migrations or ongoing cross-cluster replication scenarios. It works with both Redis and Redis-compatible databases like <strong>Valkey</strong>.</p>
-<h2 id="deployment-options-for-redis-shake-in-kubernetes">Deployment Options for Redis Shake in Kubernetes</h2>
-<p>To run Redis Shake in Kubernetes, you can follow one of the two deployment approaches described below:</p>
-<h3 id="approach-1-ephemeral-busybox-pod-with-manual-redis-shake-setup">Approach 1: Ephemeral BusyBox Pod with Manual Redis Shake Setup</h3>
-<p>This method is quick and lightweight, suitable for ad-hoc or one-off migrations.</p>
-<p><em><strong>Steps:</strong></em></p>
-<ol>
-<li>Create a BusyBox pod with a long-running sleep command to keep it alive:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl run redis-shake — image<span style="color:#f92672">=</span>busybox — command — sleep <span style="color:#ae81ff">3600</span>
-</span></span></code></pre></div><ol start="2">
-<li>Exec into the pod:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl exec -it redis-shake — sh
-</span></span></code></pre></div><ol start="3">
-<li>Download Redis Shake:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://github.com/tair-opensource/RedisShake/releases/download/v4.4.0/redis-shake-v4.4.0-linux-amd64.tar.gz
-</span></span></code></pre></div><ol start="4">
-<li>Extract the tarball:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tar -zxvf redis-shake-v4.4.0-linux-amd64.tar.gz
-</span></span></code></pre></div><h3 id="approach-2-recommended-custom-docker-image-with-redis-shake-pre-installed">Approach 2 (Recommended): Custom Docker Image with Redis Shake Pre-Installed</h3>
-<p>This approach is more reusable and production-friendly.</p>
-<p><em><strong>Dockerfile:</strong></em></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>**Stage 1: Download Redis Shake**
-</span></span><span style="display:flex;"><span>FROM golang:1.20 as builder
-</span></span><span style="display:flex;"><span>WORKDIR /app
-</span></span><span style="display:flex;"><span>RUN apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y wget
-</span></span><span style="display:flex;"><span>RUN wget https://github.com/tair-opensource/RedisShake/releases/download/v4.4.0/redis-shake-v4.4.0-linux-amd64.tar.gz <span style="color:#f92672">&amp;&amp;</span> <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    tar -xvzf redis-shake-v4.4.0-linux-amd64.tar.gz
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>**Stage 2: Build a minimal BusyBox image with the binary**
-</span></span><span style="display:flex;"><span>FROM busybox:latest
-</span></span><span style="display:flex;"><span>WORKDIR /app
-</span></span><span style="display:flex;"><span>COPY --from<span style="color:#f92672">=</span>builder /app/redis-shake /usr/local/bin/redis-shake
-</span></span><span style="display:flex;"><span>ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;redis-shake&#34;</span><span style="color:#f92672">]</span>
-</span></span></code></pre></div><h2 id="tls-setup-for-secure-redis-clusters">TLS Setup for Secure Redis Clusters</h2>
-<p>If your Redis clusters are configured with TLS, additional setup is required to mount certificates and secrets securely.</p>
-<h3 id="if-youre-following-approach-1">If you’re following Approach 1:</h3>
-<ul>
-<li>Mount the TLS certificates for both source and destination Redis clusters as volumes.</li>
-<li>Pass the password secret (if applicable) as an environment variable in the pod.</li>
-</ul>
-<h3 id="if-youre-following-approach-2">If you’re following Approach 2:</h3>
-<ul>
-<li>Create a Kubernetes job using the custom Docker image you built.</li>
-<li>Mount the TLS certificates as volumes.</li>
-<li>Provide the password (if required) as an environment variable.</li>
-</ul>
-<h2 id="create-the-shaketoml-configuration-file">Create the shake.toml configuration file</h2>
-<p>With Redis Shake binary available and the necessary TLS certificates mounted inside the container, the next step is to create shake.toml file.</p>
-<p>This file defines how Redis Shake connects to both the <strong>source</strong> and <strong>target</strong> Redis clusters. It includes essential parameters like:</p>
-<ul>
-<li>Cluster mode</li>
-<li>Authentication details</li>
-<li>TLS configurations
-Default <a href="https://github.com/tair-opensource/RedisShake/blob/v4/shake.toml">shake.toml</a> Configuration</li>
-</ul>
-<p>Let’s create a ConfigMap for <code>shake.toml</code> so we can mount it into the pod.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apiVersion: v1
-</span></span><span style="display:flex;"><span>kind: ConfigMap
-</span></span><span style="display:flex;"><span>metadata:
-</span></span><span style="display:flex;"><span>  name: redis-shake-config
-</span></span><span style="display:flex;"><span>  namespace: default
-</span></span><span style="display:flex;"><span>data:
-</span></span><span style="display:flex;"><span>  shake.toml: |
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Redis-Shake Configuration for Valkey Migration/Sync</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Source Redis/Valkey configuration</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>sync_reader<span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>    cluster <span style="color:#f92672">=</span> true                            <span style="color:#75715e"># Using cluster instead of standalone</span>
-</span></span><span style="display:flex;"><span>    address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;redis-cluster-0.redis-cluster-headless:6379&#34;</span> 
-</span></span><span style="display:flex;"><span>    password <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>REDIS_PASSWORD<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>    tls <span style="color:#f92672">=</span> true
-</span></span><span style="display:flex;"><span>    tls_config <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>ca <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/etc/redis/certs/ca.crt&#34;</span>, cert <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/etc/redis/certs/tls.crt&#34;</span>, key <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/etc/redis/certs/tls.key&#34;</span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Target Redis/Valkey configuration  </span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">[</span>redis_writer<span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>    cluster <span style="color:#f92672">=</span> true                            <span style="color:#75715e"># Using cluster instead of standalone                            </span>
-</span></span><span style="display:flex;"><span>    address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;valkey-cluster-0.valkey-cluster-headless:6379&#34;</span>
-</span></span><span style="display:flex;"><span>    password <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>VALKEY_PASSWORD<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>               <span style="color:#75715e"># Using env variable for password                          </span>
-</span></span><span style="display:flex;"><span>    tls <span style="color:#f92672">=</span> true                            <span style="color:#75715e"># Enable TLS</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># tls certificates are not required for this dest cluster, because `tls-auth-clients` is not set to true for this valkey cluster</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># tls_config = {ca = &#34;/etc/valkey/certs/ca.crt&#34;, cert = &#34;/etc/valkey/certs/tls.crt&#34;, key = &#34;/etc/valkey/certs/tls.key&#34;}</span>
-</span></span></code></pre></div><h2 id="sample-job-manifest-">Sample Job Manifest :</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apiVersion: batch/v1
-</span></span><span style="display:flex;"><span>kind: Job
-</span></span><span style="display:flex;"><span>metadata:
-</span></span><span style="display:flex;"><span>  name: redis-shake-migration
-</span></span><span style="display:flex;"><span>  namespace: default
-</span></span><span style="display:flex;"><span>spec:
-</span></span><span style="display:flex;"><span>  ttlSecondsAfterFinished: <span style="color:#ae81ff">100</span>
-</span></span><span style="display:flex;"><span>  template:
-</span></span><span style="display:flex;"><span>    metadata:
-</span></span><span style="display:flex;"><span>      labels:
-</span></span><span style="display:flex;"><span>        app: redis-shake
-</span></span><span style="display:flex;"><span>    spec:
-</span></span><span style="display:flex;"><span>      containers:
-</span></span><span style="display:flex;"><span>      - name: redis-shake
-</span></span><span style="display:flex;"><span>        image: redis-shake-custom-image
-</span></span><span style="display:flex;"><span>        imagePullPolicy: Always
-</span></span><span style="display:flex;"><span>        command: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;redis-shake&#34;</span>, <span style="color:#e6db74">&#34;/etc/redis-shake/shake.toml&#34;</span><span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>        resources:
-</span></span><span style="display:flex;"><span>          requests:
-</span></span><span style="display:flex;"><span>            memory: <span style="color:#e6db74">&#34;64Mi&#34;</span>
-</span></span><span style="display:flex;"><span>            cpu: <span style="color:#e6db74">&#34;50m&#34;</span>
-</span></span><span style="display:flex;"><span>          limits:
-</span></span><span style="display:flex;"><span>            memory: <span style="color:#e6db74">&#34;128Mi&#34;</span>
-</span></span><span style="display:flex;"><span>            cpu: <span style="color:#e6db74">&#34;100m&#34;</span>
-</span></span><span style="display:flex;"><span>        env:
-</span></span><span style="display:flex;"><span>        - name: REDIS_PASSWORD
-</span></span><span style="display:flex;"><span>          valueFrom:
-</span></span><span style="display:flex;"><span>            secretKeyRef:
-</span></span><span style="display:flex;"><span>              name: valkey-cluster-password
-</span></span><span style="display:flex;"><span>              key: password
-</span></span><span style="display:flex;"><span>        volumeMounts:
-</span></span><span style="display:flex;"><span>        - name: redis-certs
-</span></span><span style="display:flex;"><span>          mountPath: /etc/redis/certs
-</span></span><span style="display:flex;"><span>          readOnly: true
-</span></span><span style="display:flex;"><span>        - name: valkey-certs
-</span></span><span style="display:flex;"><span>          mountPath: /etc/valkey/certs
-</span></span><span style="display:flex;"><span>          readOnly: true
-</span></span><span style="display:flex;"><span>        - name: shake-config
-</span></span><span style="display:flex;"><span>          mountPath: /etc/redis-shake
-</span></span><span style="display:flex;"><span>          readOnly: true
-</span></span><span style="display:flex;"><span>      restartPolicy: Never
-</span></span><span style="display:flex;"><span>      volumes:
-</span></span><span style="display:flex;"><span>      - name: redis-certs
-</span></span><span style="display:flex;"><span>        secret:
-</span></span><span style="display:flex;"><span>          secretName: redis-cluster
-</span></span><span style="display:flex;"><span>      - name: valkey-certs
-</span></span><span style="display:flex;"><span>        secret:
-</span></span><span style="display:flex;"><span>          secretName: valkey-cluster
-</span></span><span style="display:flex;"><span>      - name: shake-config
-</span></span><span style="display:flex;"><span>        configMap:
-</span></span><span style="display:flex;"><span>          name: redis-shake-config
-</span></span></code></pre></div><p><strong>Redis Shake will :</strong></p>
-<ul>
-<li>Perform an initial full data sync from the source Redis cluster to the target.</li>
-<li>Enter incremental sync mode, where it continuously streams new writes, updates, and deletes from the source to the target in real-time.</li>
-</ul>
-<p>Once you’re confident that the target cluster is fully caught up, you can safely redirect traffic from source Redis to the target.</p>
-<p><strong>Note:</strong> You can also migrate from or to a single-node Redis instance by setting the cluster = false option in the shake.toml file for the source or target, as needed.</p>
-
-    </div>
-  </article>
-
-        </section>
-      </main>
-    </div>
-  </body>
-</html>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Redis/Valkey Cluster to Cluster Migration in Kubernetes Using Redis Shake | Sai Niteesh Ganga</title><meta name=description content="Software Engineer | Cloud Enthusiast | Tech Blogger"><link rel=icon type=image/jpeg href=/images/profile.jpeg><link rel="shortcut icon" type=image/jpeg href=/images/profile.jpeg><link rel=apple-touch-icon href=/images/profile.jpeg><link rel=stylesheet href=/css/neon-site.css></head><body><div class=site-shell><aside class=profile-panel><a class=profile-link href=/ aria-label="Go to homepage"><img class=profile-photo src=/images/profile.jpeg alt="Sai Niteesh Ganga"></a><h1 class=profile-name>Sai Niteesh Ganga</h1><p class=profile-tagline>Software Engineer | Cloud Enthusiast | Tech Blogger</p></aside><main class=content-panel><header class=site-header><a class=brand href=/>sniteesh.com</a><nav class=site-nav aria-label="Main navigation"><a href=/posts/>Blogs</a>
+<a href=/contact/>Contact</a>
+<a href=/diet-tracker/>Diet Tracker</a></nav></header><section class=page-body><article class=single-page><p class=eyebrow>posts</p><h2>Redis/Valkey Cluster to Cluster Migration in Kubernetes Using Redis Shake</h2><p class=post-date>Sep 14, 2025</p><div class=content><h2 id=overview->Overview :</h2><p>Migrating data between Redis clusters in Kubernetes can be challenging, especially with high availability and minimal downtime requirements. This guide walks you through performing a <strong>Redis cluster-to-cluster migration</strong> using <a href=https://github.com/tair-opensource/RedisShake><strong>Redis Shake</strong></a> — a powerful data migration and synchronization tool by <code>tair-opensource</code>.</p><p>Redis Shake supports both <strong>full data migration</strong> and <strong>real-time incremental synchronization</strong>, making it ideal for production migrations or ongoing cross-cluster replication scenarios. It works with both Redis and Redis-compatible databases like <strong>Valkey</strong>.</p><h2 id=deployment-options-for-redis-shake-in-kubernetes>Deployment Options for Redis Shake in Kubernetes</h2><p>To run Redis Shake in Kubernetes, you can follow one of the two deployment approaches described below:</p><h3 id=approach-1-ephemeral-busybox-pod-with-manual-redis-shake-setup>Approach 1: Ephemeral BusyBox Pod with Manual Redis Shake Setup</h3><p>This method is quick and lightweight, suitable for ad-hoc or one-off migrations.</p><p><em><strong>Steps:</strong></em></p><ol><li>Create a BusyBox pod with a long-running sleep command to keep it alive:</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl run redis-shake — image<span style=color:#f92672>=</span>busybox — command — sleep <span style=color:#ae81ff>3600</span>
+</span></span></code></pre></div><ol start=2><li>Exec into the pod:</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>kubectl exec -it redis-shake — sh
+</span></span></code></pre></div><ol start=3><li>Download Redis Shake:</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>wget https://github.com/tair-opensource/RedisShake/releases/download/v4.4.0/redis-shake-v4.4.0-linux-amd64.tar.gz
+</span></span></code></pre></div><ol start=4><li>Extract the tarball:</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>tar -zxvf redis-shake-v4.4.0-linux-amd64.tar.gz
+</span></span></code></pre></div><h3 id=approach-2-recommended-custom-docker-image-with-redis-shake-pre-installed>Approach 2 (Recommended): Custom Docker Image with Redis Shake Pre-Installed</h3><p>This approach is more reusable and production-friendly.</p><p><em><strong>Dockerfile:</strong></em></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>**Stage 1: Download Redis Shake**
+</span></span><span style=display:flex><span>FROM golang:1.20 as builder
+</span></span><span style=display:flex><span>WORKDIR /app
+</span></span><span style=display:flex><span>RUN apt-get update <span style=color:#f92672>&amp;&amp;</span> apt-get install -y wget
+</span></span><span style=display:flex><span>RUN wget https://github.com/tair-opensource/RedisShake/releases/download/v4.4.0/redis-shake-v4.4.0-linux-amd64.tar.gz <span style=color:#f92672>&amp;&amp;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    tar -xvzf redis-shake-v4.4.0-linux-amd64.tar.gz
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>**Stage 2: Build a minimal BusyBox image with the binary**
+</span></span><span style=display:flex><span>FROM busybox:latest
+</span></span><span style=display:flex><span>WORKDIR /app
+</span></span><span style=display:flex><span>COPY --from<span style=color:#f92672>=</span>builder /app/redis-shake /usr/local/bin/redis-shake
+</span></span><span style=display:flex><span>ENTRYPOINT <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;redis-shake&#34;</span><span style=color:#f92672>]</span>
+</span></span></code></pre></div><h2 id=tls-setup-for-secure-redis-clusters>TLS Setup for Secure Redis Clusters</h2><p>If your Redis clusters are configured with TLS, additional setup is required to mount certificates and secrets securely.</p><h3 id=if-youre-following-approach-1>If you’re following Approach 1:</h3><ul><li>Mount the TLS certificates for both source and destination Redis clusters as volumes.</li><li>Pass the password secret (if applicable) as an environment variable in the pod.</li></ul><h3 id=if-youre-following-approach-2>If you’re following Approach 2:</h3><ul><li>Create a Kubernetes job using the custom Docker image you built.</li><li>Mount the TLS certificates as volumes.</li><li>Provide the password (if required) as an environment variable.</li></ul><h2 id=create-the-shaketoml-configuration-file>Create the shake.toml configuration file</h2><p>With Redis Shake binary available and the necessary TLS certificates mounted inside the container, the next step is to create shake.toml file.</p><p>This file defines how Redis Shake connects to both the <strong>source</strong> and <strong>target</strong> Redis clusters. It includes essential parameters like:</p><ul><li>Cluster mode</li><li>Authentication details</li><li>TLS configurations
+Default <a href=https://github.com/tair-opensource/RedisShake/blob/v4/shake.toml>shake.toml</a> Configuration</li></ul><p>Let’s create a ConfigMap for <code>shake.toml</code> so we can mount it into the pod.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>apiVersion: v1
+</span></span><span style=display:flex><span>kind: ConfigMap
+</span></span><span style=display:flex><span>metadata:
+</span></span><span style=display:flex><span>  name: redis-shake-config
+</span></span><span style=display:flex><span>  namespace: default
+</span></span><span style=display:flex><span>data:
+</span></span><span style=display:flex><span>  shake.toml: |
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Redis-Shake Configuration for Valkey Migration/Sync</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Source Redis/Valkey configuration</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>[</span>sync_reader<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>    cluster <span style=color:#f92672>=</span> true                            <span style=color:#75715e># Using cluster instead of standalone</span>
+</span></span><span style=display:flex><span>    address <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;redis-cluster-0.redis-cluster-headless:6379&#34;</span> 
+</span></span><span style=display:flex><span>    password <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>REDIS_PASSWORD<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>    tls <span style=color:#f92672>=</span> true
+</span></span><span style=display:flex><span>    tls_config <span style=color:#f92672>=</span> <span style=color:#f92672>{</span>ca <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;/etc/redis/certs/ca.crt&#34;</span>, cert <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;/etc/redis/certs/tls.crt&#34;</span>, key <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;/etc/redis/certs/tls.key&#34;</span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Target Redis/Valkey configuration  </span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>[</span>redis_writer<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>    cluster <span style=color:#f92672>=</span> true                            <span style=color:#75715e># Using cluster instead of standalone                            </span>
+</span></span><span style=display:flex><span>    address <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;valkey-cluster-0.valkey-cluster-headless:6379&#34;</span>
+</span></span><span style=display:flex><span>    password <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>VALKEY_PASSWORD<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>               <span style=color:#75715e># Using env variable for password                          </span>
+</span></span><span style=display:flex><span>    tls <span style=color:#f92672>=</span> true                            <span style=color:#75715e># Enable TLS</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># tls certificates are not required for this dest cluster, because `tls-auth-clients` is not set to true for this valkey cluster</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># tls_config = {ca = &#34;/etc/valkey/certs/ca.crt&#34;, cert = &#34;/etc/valkey/certs/tls.crt&#34;, key = &#34;/etc/valkey/certs/tls.key&#34;}</span>
+</span></span></code></pre></div><h2 id=sample-job-manifest->Sample Job Manifest :</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>apiVersion: batch/v1
+</span></span><span style=display:flex><span>kind: Job
+</span></span><span style=display:flex><span>metadata:
+</span></span><span style=display:flex><span>  name: redis-shake-migration
+</span></span><span style=display:flex><span>  namespace: default
+</span></span><span style=display:flex><span>spec:
+</span></span><span style=display:flex><span>  ttlSecondsAfterFinished: <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>  template:
+</span></span><span style=display:flex><span>    metadata:
+</span></span><span style=display:flex><span>      labels:
+</span></span><span style=display:flex><span>        app: redis-shake
+</span></span><span style=display:flex><span>    spec:
+</span></span><span style=display:flex><span>      containers:
+</span></span><span style=display:flex><span>      - name: redis-shake
+</span></span><span style=display:flex><span>        image: redis-shake-custom-image
+</span></span><span style=display:flex><span>        imagePullPolicy: Always
+</span></span><span style=display:flex><span>        command: <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;redis-shake&#34;</span>, <span style=color:#e6db74>&#34;/etc/redis-shake/shake.toml&#34;</span><span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>        resources:
+</span></span><span style=display:flex><span>          requests:
+</span></span><span style=display:flex><span>            memory: <span style=color:#e6db74>&#34;64Mi&#34;</span>
+</span></span><span style=display:flex><span>            cpu: <span style=color:#e6db74>&#34;50m&#34;</span>
+</span></span><span style=display:flex><span>          limits:
+</span></span><span style=display:flex><span>            memory: <span style=color:#e6db74>&#34;128Mi&#34;</span>
+</span></span><span style=display:flex><span>            cpu: <span style=color:#e6db74>&#34;100m&#34;</span>
+</span></span><span style=display:flex><span>        env:
+</span></span><span style=display:flex><span>        - name: REDIS_PASSWORD
+</span></span><span style=display:flex><span>          valueFrom:
+</span></span><span style=display:flex><span>            secretKeyRef:
+</span></span><span style=display:flex><span>              name: valkey-cluster-password
+</span></span><span style=display:flex><span>              key: password
+</span></span><span style=display:flex><span>        volumeMounts:
+</span></span><span style=display:flex><span>        - name: redis-certs
+</span></span><span style=display:flex><span>          mountPath: /etc/redis/certs
+</span></span><span style=display:flex><span>          readOnly: true
+</span></span><span style=display:flex><span>        - name: valkey-certs
+</span></span><span style=display:flex><span>          mountPath: /etc/valkey/certs
+</span></span><span style=display:flex><span>          readOnly: true
+</span></span><span style=display:flex><span>        - name: shake-config
+</span></span><span style=display:flex><span>          mountPath: /etc/redis-shake
+</span></span><span style=display:flex><span>          readOnly: true
+</span></span><span style=display:flex><span>      restartPolicy: Never
+</span></span><span style=display:flex><span>      volumes:
+</span></span><span style=display:flex><span>      - name: redis-certs
+</span></span><span style=display:flex><span>        secret:
+</span></span><span style=display:flex><span>          secretName: redis-cluster
+</span></span><span style=display:flex><span>      - name: valkey-certs
+</span></span><span style=display:flex><span>        secret:
+</span></span><span style=display:flex><span>          secretName: valkey-cluster
+</span></span><span style=display:flex><span>      - name: shake-config
+</span></span><span style=display:flex><span>        configMap:
+</span></span><span style=display:flex><span>          name: redis-shake-config
+</span></span></code></pre></div><p><strong>Redis Shake will :</strong></p><ul><li>Perform an initial full data sync from the source Redis cluster to the target.</li><li>Enter incremental sync mode, where it continuously streams new writes, updates, and deletes from the source to the target in real-time.</li></ul><p>Once you’re confident that the target cluster is fully caught up, you can safely redirect traffic from source Redis to the target.</p><p><strong>Note:</strong> You can also migrate from or to a single-node Redis instance by setting the cluster = false option in the shake.toml file for the source or target, as needed.</p></div></article></section></main></div></body></html>

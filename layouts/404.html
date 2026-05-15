@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Page not found</title>
     <link rel="icon" type="image/jpeg" href="/images/profile.jpeg" />
+    <link rel="shortcut icon" type="image/jpeg" href="/images/profile.jpeg" />
+    <link rel="apple-touch-icon" href="/images/profile.jpeg" />
     <script>
       (function () {
         const l = window.location;
@@ -13,6 +15,7 @@
         // GitHub Pages serves root 404.html for unknown paths.
         // For diet-tracker deep links, redirect to SPA entry route.
         if (l.pathname === appBase || l.pathname.startsWith(appBase + "/")) {
+          document.title = "Diet Tracker | Sai Niteesh Ganga";
           const appRelativePath = l.pathname.slice(appBase.length).replace(/^\/+/, "");
           const encodedPath = appRelativePath.replace(/&/g, "~and~");
           const encodedSearch = l.search

@@ -3,15 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>
-      {{ if .IsHome }}
-        {{ site.Title }}
-      {{ else }}
-        {{ .Title }} | {{ site.Title }}
-      {{ end }}
-    </title>
+    {{ $siteTitle := site.Title | default site.Params.title | default "Sai Niteesh Ganga" }}
+    <title>{{ if .IsHome }}{{ $siteTitle }}{{ else }}{{ .Title }} | {{ $siteTitle }}{{ end }}</title>
     <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}" />
     <link rel="icon" type="image/jpeg" href="/images/profile.jpeg" />
+    <link rel="shortcut icon" type="image/jpeg" href="/images/profile.jpeg" />
+    <link rel="apple-touch-icon" href="/images/profile.jpeg" />
     <link rel="stylesheet" href="/css/neon-site.css" />
   </head>
   <body>
